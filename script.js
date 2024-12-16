@@ -1,6 +1,6 @@
 // Lista completa de Yo-kai con sus nombres e imágenes
 const yoKaiList = [
-    { name: "Alcaldero", img: "Alcaldero.png" },
+    { name: "Alcaldero", img: "alcaldero.png" },
     { name: "Sinná", img: "Sinna.png" },
     { name: "Sinnareno", img: "Sinnareno.png" },
     { name: "Katano", img: "Katano.png" },
