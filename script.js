@@ -78,7 +78,7 @@ const yoKaiList = [
 { name: "Castelius III", img: "castelius_III.png" },
 { name: "Castelius II", img: "castelius_II.png" },
 { name: "Castelius I", img: "Castelius_I.png" },
-{ name: "Maxicastelius", img: "maxicastelius.png" },
+{ name: "Maxicastelius", img: "Maxicastelius.png" },
 { name: "Robonyan", img: "robonyan.png" },
 { name: "Aureonyan", img: "aureonyan.png" },
 { name: "Pom", img: "pom.png" },
