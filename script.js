@@ -263,30 +263,42 @@ function playGetSound() {
     getSound.play();
 }
 
+// Actualizar la puntuación en formato (adivinados / totales)
+function updateScoreDisplay() {
+    const scoreDisplay = document.getElementById("score");
+    scoreDisplay.textContent = `${score}/${yoKaiList.length}`;
+}
+
 // Verificar la respuesta del usuario
 function checkAnswer() {
     if (gameEnded) return; // Si el juego ha terminado, no hacer nada
 
     const userAnswer = normalizeString(document.getElementById("answer-input").value.trim());
 
+    let correctGuess = false; // Bandera para reproducir el sonido solo si hay aciertos
+
     yoKaiList.forEach((yoKai, index) => {
         const normalizedYoKaiName = normalizeString(yoKai.name);
 
-        // Si la respuesta es correcta y aún no ha sido desbloqueada
-        if (normalizedYoKaiName === userAnswer && !unlockedYoKai.has(normalizedYoKaiName)) {
+        // Si la respuesta coincide y no ha sido desbloqueada aún
+        if (normalizedYoKaiName === userAnswer && !unlockedYoKai.has(`${normalizedYoKaiName}-${index}`)) {
             const yoKaiImg = document.getElementById(`yo-kai${index + 1}`);
             if (yoKaiImg && yoKaiImg.src.includes("no-kai.png")) {
                 yoKaiImg.src = yoKai.img; // Actualiza la imagen
-                unlockedYoKai.add(normalizedYoKaiName); // Añade al registro
-                playGetSound(); // Reproducir sonido
+                unlockedYoKai.add(`${normalizedYoKaiName}-${index}`); // Añadir cada Yo-kai individual al registro
                 score++;
-                document.getElementById("score").textContent = score;
-                document.getElementById("answer-input").value = ""; // Borra la respuesta
-
-                checkGameEnd(); // Verifica si el juego ha terminado
+                correctGuess = true; // Se encontró un acierto
             }
         }
     });
+
+    if (correctGuess) {
+        playGetSound(); // Reproducir sonido solo si hubo un acierto
+        updateScoreDisplay(); // Actualizar puntuación
+    }
+
+    document.getElementById("answer-input").value = ""; // Borra la respuesta
+    checkGameEnd(); // Verifica si el juego ha terminado
 }
 
 // Verificar si el juego ha terminado (cuando se han adivinado todos los Yo-kai)
@@ -344,8 +356,14 @@ function stopTimer() {
     clearInterval(timerInterval);
 }
 
-// Manejador de evento: validación automática con "input"
-document.getElementById("answer-input").addEventListener("input", checkAnswer);
+// Manejador de evento: validación automática con "input" pero con un pequeño retraso para evitar interferencias con la escritura
+let debounceTimeout;
 
-// Iniciar temporizador al cargar la página
+document.getElementById("answer-input").addEventListener("input", function() {
+    clearTimeout(debounceTimeout); // Limpiar el timeout anterior
+    debounceTimeout = setTimeout(checkAnswer, 500); // Ejecutar checkAnswer después de 500 ms sin cambios
+});
+
+// Inicializar el marcador y temporizador al cargar la página
+updateScoreDisplay(); // Inicializa la puntuación en 0/total
 startTimer();
