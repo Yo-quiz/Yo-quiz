@@ -295,9 +295,9 @@ function checkAnswer() {
     if (correctGuess) {
         playGetSound(); // Reproducir sonido solo si hubo un acierto
         updateScoreDisplay(); // Actualizar puntuación
+        document.getElementById("answer-input").value = ""; // Borra la respuesta después de un acierto
     }
 
-    document.getElementById("answer-input").value = ""; // Borra la respuesta
     checkGameEnd(); // Verifica si el juego ha terminado
 }
 
@@ -356,13 +356,8 @@ function stopTimer() {
     clearInterval(timerInterval);
 }
 
-// Manejador de evento: validación automática con "input" pero con un pequeño retraso para evitar interferencias con la escritura
-let debounceTimeout;
-
-document.getElementById("answer-input").addEventListener("input", function() {
-    clearTimeout(debounceTimeout); // Limpiar el timeout anterior
-    debounceTimeout = setTimeout(checkAnswer, 500); // Ejecutar checkAnswer después de 500 ms sin cambios
-});
+// Manejador de evento: validación automática con "input"
+document.getElementById("answer-input").addEventListener("input", checkAnswer);
 
 // Inicializar el marcador y temporizador al cargar la página
 updateScoreDisplay(); // Inicializa la puntuación en 0/total
