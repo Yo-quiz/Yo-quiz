@@ -249,7 +249,8 @@ const yoKaiList = [
 ];
 
 let score = 0;
-let gameEnded = false; // Para evitar que se actualice el score una vez que el juego haya terminado
+let gameEnded = false; // Evita cambios una vez terminado el juego
+const unlockedYoKai = new Set(); // Registro de nombres desbloqueados
 
 // Normalizar la entrada del usuario (sin tildes y en minúsculas)
 function normalizeString(str) {
@@ -258,90 +259,86 @@ function normalizeString(str) {
 
 // Verificar la respuesta del usuario
 function checkAnswer() {
-    if (gameEnded) return; // Si el juego terminó, no hacer nada más
+    if (gameEnded) return; // Si el juego ha terminado, no hacer nada
+
     const userAnswer = normalizeString(document.getElementById("answer-input").value.trim());
+
     yoKaiList.forEach((yoKai, index) => {
-        if (normalizeString(yoKai.name) === userAnswer) {
+        const normalizedYoKaiName = normalizeString(yoKai.name);
+
+        // Si la respuesta es correcta y aún no ha sido desbloqueada
+        if (normalizedYoKaiName === userAnswer && !unlockedYoKai.has(normalizedYoKaiName)) {
             const yoKaiImg = document.getElementById(`yo-kai${index + 1}`);
-            if (yoKaiImg.src.includes("no-kai.png")) {
-                yoKaiImg.src = yoKai.img;
+            if (yoKaiImg && yoKaiImg.src.includes("no-kai.png")) {
+                yoKaiImg.src = yoKai.img; // Actualiza la imagen
+                unlockedYoKai.add(normalizedYoKaiName); // Añade al registro
                 score++;
                 document.getElementById("score").textContent = score;
+                document.getElementById("answer-input").value = ""; // Borra la respuesta
+
                 checkGameEnd(); // Verifica si el juego ha terminado
             }
         }
     });
-    document.getElementById("answer-input").value = "";
 }
 
 // Verificar si el juego ha terminado (cuando se han adivinado todos los Yo-kai)
 function checkGameEnd() {
     if (score === yoKaiList.length) {
-        gameEnded = true; // Termina el juego
+        gameEnded = true;
         stopTimer(); // Detener el temporizador
-        showCongratsImage(); // Mostrar la imagen de "¡Felicidades!"
+        showCongratsImage(); // Mostrar imagen de "¡Felicidades!"
     }
 }
 
-// Manejador de eventos para la entrada del usuario
-document.getElementById("answer-input").addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        checkAnswer();
-    }
-});
-
-let startTime;
-let timerInterval;
-
-// Función para iniciar el temporizador
-function startTimer() {
-    startTime = Date.now();
-    timerInterval = setInterval(updateTimer, 1000);
-}
-
-// Función para actualizar el temporizador
-function updateTimer() {
-    const currentTime = Date.now();
-    const elapsedTime = currentTime - startTime;
-
-    // Convertimos el tiempo en horas, minutos y segundos
-    const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
-    const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
-
-    // Mostramos el tiempo en el formato HH:MM:SS
-    const formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-    document.getElementById("time").textContent = formattedTime;
-}
-
-// Función para detener el temporizador
-function stopTimer() {
-    clearInterval(timerInterval);
-}
-
-// Función para mostrar la imagen de "¡Felicidades!"
+// Mostrar la imagen de "¡Felicidades!" al finalizar el juego
 function showCongratsImage() {
     const congratsImg = document.createElement("img");
-    congratsImg.src = "congrats.png";
+    congratsImg.src = "img/congrats.png";
     congratsImg.id = "congrats-image";
     congratsImg.style.position = "fixed";
     congratsImg.style.bottom = "0";
     congratsImg.style.left = "50%";
     congratsImg.style.transform = "translateX(-50%)";
-    congratsImg.style.width = "100vw"; // Asegura que ocupa todo el ancho
-    congratsImg.style.height = "auto"; // Mantiene la proporción
-    congratsImg.style.zIndex = "1000"; // Asegura que esté por encima de todo
-    congratsImg.style.cursor = "pointer"; // Muestra que se puede clicar
+    congratsImg.style.width = "100vw";
+    congratsImg.style.zIndex = "1000";
+    congratsImg.style.cursor = "pointer";
 
-    // Añadir el evento para ocultarla al hacer clic
+    // Ocultar la imagen al hacer clic
     congratsImg.addEventListener("click", () => {
-        congratsImg.remove(); // Elimina la imagen de la pantalla
+        congratsImg.remove();
     });
 
-    // Añadir la imagen al body
     document.body.appendChild(congratsImg);
 }
 
-// Llamar al temporizador al cargar la página
+// Temporizador
+let startTime;
+let timerInterval;
+
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+    const currentTime = Date.now();
+    const elapsedTime = currentTime - startTime;
+
+    const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+    const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+
+    const formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    document.getElementById("time").textContent = formattedTime;
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+
+// Manejador de evento: validación automática con "input"
+document.getElementById("answer-input").addEventListener("input", checkAnswer);
+
+// Iniciar temporizador al cargar la página
 startTimer();
