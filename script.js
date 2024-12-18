@@ -257,6 +257,12 @@ function normalizeString(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
+// Reproducir sonido cuando se desbloquea un Yo-kai
+function playGetSound() {
+    const getSound = new Audio("get.mp3"); // Ruta del archivo de sonido
+    getSound.play();
+}
+
 // Verificar la respuesta del usuario
 function checkAnswer() {
     if (gameEnded) return; // Si el juego ha terminado, no hacer nada
@@ -272,6 +278,7 @@ function checkAnswer() {
             if (yoKaiImg && yoKaiImg.src.includes("no-kai.png")) {
                 yoKaiImg.src = yoKai.img; // Actualiza la imagen
                 unlockedYoKai.add(normalizedYoKaiName); // Añade al registro
+                playGetSound(); // Reproducir sonido
                 score++;
                 document.getElementById("score").textContent = score;
                 document.getElementById("answer-input").value = ""; // Borra la respuesta
