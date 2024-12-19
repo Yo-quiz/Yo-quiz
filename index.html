@@ -16,7 +16,7 @@
             text-align: center;
             color: black;
             padding: 1px;
-	    font-size: 50px;
+            font-size: 50px;
         }
 
         .container {
@@ -36,6 +36,7 @@
             width: 50px;
             height: 50px;
             margin: 3px;
+            transition: transform 0.3s ease; /* Transición suave */
         }
 
         input {
@@ -51,6 +52,23 @@
             margin-top: 10px;
         }
 
+        /* Animación de aparición y reducción de tamaño */
+        @keyframes appearAndShrink {
+            0% {
+                transform: scale(1.5); /* Más grande */
+                opacity: 1; /* Totalmente visible */
+            }
+            100% {
+                transform: scale(1); /* Tamaño normal */
+                opacity: 1; /* Mantener visibilidad */
+            }
+        }
+
+        /* Clase para activar la animación */
+        .yokai-unlocked {
+            animation: appearAndShrink 0.5s ease-in-out; /* Duración y suavidad */
+            z-index: 10; /* Asegura que esté encima durante la animación */
+        }
     </style>
 </head>
 <body>
@@ -59,7 +77,6 @@
     </div>
     <div class="container">
         <div class="yo-kai-icons">
-            <!-- Añadimos las imágenes de los 56 Yo-kai -->
             <img id="yo-kai1" src="no-kai.png" alt="no-kai">
             <img id="yo-kai2" src="no-kai.png" alt="no-kai">
             <img id="yo-kai3" src="no-kai.png" alt="no-kai">
@@ -306,7 +323,7 @@
 <img id="yo-kai244" src="no-kai.png" alt="no-kai">
 <img id="yo-kai245" src="no-kai.png" alt="no-kai">
 
-        </div>
+ </div>
 
         <input type="text" id="answer-input" placeholder="Escribe el nombre del Yo-kai">
         <div class="info">
@@ -318,3 +335,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
