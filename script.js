@@ -229,7 +229,7 @@ const yoKaiList = [
 { name: "Animanstruo", img: "animanstruo.png" },
 { name: "Fantasmurai", img: "fantasmurai.png" },
 { name: "Tarantutor", img: "tarantutor.png" },
-{ name: "Dr. Majarov", img: "dr._majarov.png" },
+{ name: "Dr. Majarov", aliases: ["dr. majarov", "dr majarov", "doctor majarov"], img: "dr._majarov.png" },
 { name: "McKraken", img: "mckraken.png" },
 { name: "McKraken", img: "mckraken_2.png" },
 { name: "Duoleta", img: "duoleta.png" },
@@ -238,7 +238,7 @@ const yoKaiList = [
 { name: "Jabalupo", img: "jabalupo.png" },
 { name: "Estigio VI", img: "estigio_vi.png" },
 { name: "Clipso", img: "clipso.png" },
-{ name: "Dr. Sintripas", img: "dr._sintripas.png" },
+{ name: "Dr. Sintripas", aliases: ["dr. sintripas", "dr sintripas", "doctor sintripas"], img: "img/dr._sintripas.png" },
 { name: "Terrormadura", img: "terrormadura.png" },
 { name: "Calarrupto", img: "calarrupto.png" },
 { name: "Caldewok", img: "caldewok.png" },
@@ -248,13 +248,13 @@ const yoKaiList = [
 
 ];
 
-let score = 0;
+let score = 0; 
 let gameEnded = false; // Evita cambios una vez terminado el juego
-const unlockedYoKai = new Set(); // Registro de nombres desbloqueados
+const unlockedYoKai = new Set(); // Registro de Yo-kai desbloqueados por índice
 
 // Normalizar la entrada del usuario (sin tildes y en minúsculas)
 function normalizeString(str) {
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    return str.normalize("NFD").replace(/[̀-\u036f]/g, "").toLowerCase();
 }
 
 // Reproducir sonido cuando se desbloquea un Yo-kai
@@ -278,10 +278,11 @@ function checkAnswer() {
     let correctGuess = false; // Bandera para reproducir el sonido solo si hay aciertos
 
     yoKaiList.forEach((yoKai, index) => {
-        const normalizedYoKaiName = normalizeString(yoKai.name);
+        // Normaliza todos los nombres asociados al Yo-kai
+        const normalizedNames = [yoKai.name, ...(yoKai.aliases || [])].map(name => normalizeString(name));
 
-        // Si la respuesta coincide y no ha sido desbloqueada aún
-        if (normalizedYoKaiName === userAnswer && !unlockedYoKai.has(`${normalizedYoKaiName}-${index}`)) {
+        // Si la respuesta coincide con alguno de los nombres y no ha sido desbloqueado
+        if (normalizedNames.includes(userAnswer) && !unlockedYoKai.has(index)) {
             const yoKaiImg = document.getElementById(`yo-kai${index + 1}`);
             if (yoKaiImg && yoKaiImg.src.includes("no-kai.png")) {
                 yoKaiImg.src = yoKai.img; // Actualiza la imagen
@@ -292,7 +293,7 @@ function checkAnswer() {
                     yoKaiImg.classList.remove("yokai-unlocked"); // Quitar clase tras animación
                 });
 
-                unlockedYoKai.add(`${normalizedYoKaiName}-${index}`); // Añadir cada Yo-kai individual al registro
+                unlockedYoKai.add(index); // Marcar el Yo-kai como desbloqueado
                 score++;
                 correctGuess = true; // Se encontró un acierto
             }
