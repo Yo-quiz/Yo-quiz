@@ -285,6 +285,13 @@ function checkAnswer() {
             const yoKaiImg = document.getElementById(`yo-kai${index + 1}`);
             if (yoKaiImg && yoKaiImg.src.includes("no-kai.png")) {
                 yoKaiImg.src = yoKai.img; // Actualiza la imagen
+
+                // Añadir clase para animación
+                yoKaiImg.classList.add("yokai-unlocked");
+                yoKaiImg.addEventListener("animationend", () => {
+                    yoKaiImg.classList.remove("yokai-unlocked"); // Quitar clase tras animación
+                });
+
                 unlockedYoKai.add(`${normalizedYoKaiName}-${index}`); // Añadir cada Yo-kai individual al registro
                 score++;
                 correctGuess = true; // Se encontró un acierto
