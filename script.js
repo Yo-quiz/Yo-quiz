@@ -238,7 +238,7 @@ const yoKaiList = [
 { name: "Jabalupo", img: "jabalupo.png" },
 { name: "Estigio VI", img: "estigio_vi.png" },
 { name: "Clipso", img: "clipso.png" },
-{ name: "Dr. Sintripas", aliases: ["dr. sintripas", "dr sintripas", "doctor sintripas"], img: "img/dr._sintripas.png" },
+{ name: "Dr. Sintripas", aliases: ["dr. sintripas", "dr sintripas", "doctor sintripas"], img: "dr._sintripas.png" },
 { name: "Terrormadura", img: "terrormadura.png" },
 { name: "Calarrupto", img: "calarrupto.png" },
 { name: "Caldewok", img: "caldewok.png" },
