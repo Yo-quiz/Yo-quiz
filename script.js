@@ -257,10 +257,16 @@ function normalizeString(str) {
     return str.normalize("NFD").replace(/[̀-\u036f]/g, "").toLowerCase();
 }
 
-// Reproducir sonido cuando se desbloquea un Yo-kai
+// Crear el objeto de audio una sola vez
+let getSound = new Audio("get.mp3");
+
+// Reproducir sonido cuando se desbloquea un Yo-kai (sin solapamiento)
 function playGetSound() {
-    const getSound = new Audio("get.mp3"); // Ruta del archivo de sonido
-    getSound.play();
+    if (!getSound.paused) {
+        getSound.pause(); // Detener el sonido actual si ya está reproduciéndose
+        getSound.currentTime = 0; // Reiniciar el sonido al principio
+    }
+    getSound.play(); // Reproducir el sonido
 }
 
 // Actualizar la puntuación en formato (adivinados / totales)
@@ -370,3 +376,10 @@ document.getElementById("answer-input").addEventListener("input", checkAnswer);
 // Inicializar el marcador y temporizador al cargar la página
 updateScoreDisplay(); // Inicializa la puntuación en 0/total
 startTimer();
+
+window.addEventListener("beforeunload", (event) => {
+    if (score > 0) { // Mostrar advertencia solo si hay progreso
+        event.preventDefault();
+        event.returnValue = "¿Estás seguro de que quieres salir? Se perderá todo el progreso.";
+    }
+});
